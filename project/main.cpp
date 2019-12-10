@@ -42,13 +42,11 @@ GLuint projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation;
 GLuint lightLocation;
 GLuint diffuceColorSampler, specularColorSampler;
 GLuint diffuseTexture, specularTexture;
-GLuint objVAO, triangleVAO;
+GLuint objVAO;
 GLuint objVerticiesVBO, objUVVBO, objNormalsVBO;
-GLuint triangleVerticesVBO, triangleNormalsVBO;
 std::vector<vec3> objVertices, objNormals;
 std::vector<vec2> objUVs;
 
-#define RENDER_TRIANGLE 1
 
 void createContext()
 {
@@ -58,14 +56,14 @@ void createContext()
         "StandardShading.fragmentshader");
 
     // load obj
-    loadOBJWithTiny("suzanne.obj", objVertices, objUVs, objNormals);
+    loadOBJWithTiny("skin1.obj", objVertices, objUVs, objNormals);
     // loadOBJWithTiny("earth.obj", objVertices, objUVs, objNormals);
 
     // Homework 4: implement flat shading by transforming the normals of the model.
 
     // Task 6.2: load diffuse and specular texture maps
-    diffuseTexture = loadSOIL("suzanne_diffuse.bmp");
-    specularTexture = loadSOIL("suzanne_specular.bmp");
+    // diffuseTexture = loadSOIL("suzanne_diffuse.bmp");
+    // specularTexture = loadSOIL("suzanne_specular.bmp");
     // diffuseTexture = loadSOIL("earth_diffuse.jpg");
 
     // Task 6.3: get a pointer to the texture samplers (diffuseColorSampler, specularColorSampler)
@@ -80,28 +78,7 @@ void createContext()
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    // triangle
-    // Task 1.1: bind vertex positions to attribute 0 and object normals to
-    // attribute 1
-    glGenVertexArrays(1, &triangleVAO);
-    glBindVertexArray(triangleVAO);
-
-    glGenBuffers(1, &triangleVerticesVBO);    // given
-    glBindBuffer(GL_ARRAY_BUFFER, triangleVerticesVBO);
-    const GLfloat tirangleVertices[] =
-    {
-        -1.5, -1.5, 0.0,
-        0.0, 1.5, 0.0,
-        1.5, -1.5, 0.0
-    };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(tirangleVertices),
-        &tirangleVertices[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(0);
-
-    // define object normals VBO
-
-
+    
     // obj
     // Task 6.1: bind object vertex positions to attribute 0, UV coordinates
     // to attribute 1 and normals to attribute 2
@@ -137,10 +114,6 @@ void createContext()
 
 void free()
 {
-    glDeleteBuffers(1, &triangleVerticesVBO);
-    glDeleteBuffers(1, &triangleNormalsVBO);
-    glDeleteVertexArrays(1, &triangleVAO);
-
     glDeleteBuffers(1, &objVerticiesVBO);
     glDeleteBuffers(1, &objUVVBO);
     glDeleteBuffers(1, &objNormalsVBO);
@@ -164,12 +137,8 @@ void mainLoop()
         // camera
         camera->update();
 
-        // bind
-#if RENDER_TRIANGLE == 1
-        glBindVertexArray(triangleVAO);
-#else
         glBindVertexArray(objVAO);
-#endif
+
         mat4 projectionMatrix = camera->projectionMatrix;
         mat4 viewMatrix = camera->viewMatrix;
         glm::mat4 modelMatrix = glm::mat4(1.0);
@@ -192,11 +161,7 @@ void mainLoop()
         //*/
 
         // draw
-#if RENDER_TRIANGLE == 1
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-#else
         glDrawArrays(GL_TRIANGLES, 0, objVertices.size());
-#endif
 
         glfwSwapBuffers(window);
 
