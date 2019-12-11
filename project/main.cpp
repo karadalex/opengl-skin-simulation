@@ -32,7 +32,7 @@ void free();
 
 #define W_WIDTH 1024
 #define W_HEIGHT 768
-#define TITLE "Lab 05"
+#define TITLE "SKIN PROJECT"
 
 // Global variables
 GLFWwindow* window;
@@ -52,23 +52,21 @@ void createContext()
 {
     // Create and compile our GLSL program from the shaders
     shaderProgram = loadShaders(
-        "StandardShading.vertexshader",
-        "StandardShading.fragmentshader");
+        "skin-shader.vert",
+        "skin-shader.frag");
 
     // load obj
     loadOBJWithTiny("skin1.obj", objVertices, objUVs, objNormals);
-    // loadOBJWithTiny("earth.obj", objVertices, objUVs, objNormals);
 
     // Homework 4: implement flat shading by transforming the normals of the model.
 
     // Task 6.2: load diffuse and specular texture maps
-    // diffuseTexture = loadSOIL("suzanne_diffuse.bmp");
+    diffuseTexture = loadSOIL("1K-human_skin_4_diffuseOriginal.jpg");
     // specularTexture = loadSOIL("suzanne_specular.bmp");
-    // diffuseTexture = loadSOIL("earth_diffuse.jpg");
 
     // Task 6.3: get a pointer to the texture samplers (diffuseColorSampler, specularColorSampler)
     diffuceColorSampler = glGetUniformLocation(shaderProgram, "diffuceColorSampler");
-    specularColorSampler = glGetUniformLocation(shaderProgram, "specularColorSampler");
+    // specularColorSampler = glGetUniformLocation(shaderProgram, "specularColorSampler");
 
     // get pointers to the uniform variables
     projectionMatrixLocation = glGetUniformLocation(shaderProgram, "P");
@@ -150,14 +148,14 @@ void mainLoop()
         glUniform3f(lightLocation, lightPos.x, lightPos.y, lightPos.z); // light
 
         // Task 6.4: bind textures and transmit diffuse and specular maps to the GPU
-        /*/
+        //*/
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseTexture);
-        glUniform1i(diffuceColorSampler, 0);
+        glUniform1i(diffuceColorSampler, 1);
 
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, specularTexture);
-        glUniform1i(specularColorSampler, 1);
+        // glActiveTexture(GL_TEXTURE1);
+        // glBindTexture(GL_TEXTURE_2D, specularTexture);
+        // glUniform1i(specularColorSampler, 1);
         //*/
 
         // draw

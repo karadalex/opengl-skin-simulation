@@ -111,8 +111,8 @@ add_executable(project
   common/texture.cpp
   common/texture.h
 
-  project/StandardShading.fragmentshader
-  project/StandardShading.vertexshader
+  project/skin-shader.frag
+  project/skin-shader.vert
   )
 target_link_libraries(project
   ${ALL_LIBS}
@@ -130,7 +130,7 @@ create_default_target_launcher(project WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE
 ###############################################################################
 
 SOURCE_GROUP(common REGULAR_EXPRESSION ".*/common/.*" )
-SOURCE_GROUP(shaders REGULAR_EXPRESSION ".*/.*shader$" )
+SOURCE_GROUP(shaders REGULAR_EXPRESSION ".*/*-shader.*" )
 SOURCE_GROUP(obj REGULAR_EXPRESSION ".*/.*obj$" )
 
 ###############################################################################
