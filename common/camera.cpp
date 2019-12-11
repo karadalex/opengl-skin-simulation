@@ -101,6 +101,14 @@ void Camera::update() {
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         position -= right * deltaTime * speed;
     }
+    // Move upwards
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+        position += up * deltaTime * speed;
+    }
+    // Move downwards
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+        position -= up * deltaTime * speed;
+    }
 
     // Task 5.6: handle zoom in/out effects
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {

@@ -53,7 +53,8 @@ void createContext()
     // Create and compile our GLSL program from the shaders
     shaderProgram = loadShaders(
         "skin-shader.vert",
-        "skin-shader.frag");
+        "skin-shader.frag"
+    );
 
     // load obj
     loadOBJWithTiny("skin1.obj", objVertices, objUVs, objNormals);
