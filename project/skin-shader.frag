@@ -24,42 +24,27 @@ void main()
     // default color
     fragment_color = vec4(1, 1, 1, 1);
 
+    // model light; specular (Ls), diffuse (Ld) and ambient (La) color
 	vec3 Ls = vec3(1, 1, 1);
 	vec3 Ld = vec3(1, 1, 1);
 	vec3 La = vec3(1, 1, 1);
 
-    // Task 2.1: model light; specular (Ls), diffuse (Ld) and ambient (La) color
-
-    // Task 2.2: model material properties; specular (Ks), diffuse (Kd), 
-    // ambient (Ka) color and specular exponent (Ns) (gold material)
-    /* Gold
-        specular  0.628281, 0.555802, 0.366065
-        diffuse   0.75164, 0.60648, 0.22648
-        ambient   0.24725, 0.1995, 0.0745
-        shininess 51.2
-    */
-
-    // Homework 2: make model materials as uniform variables and display multiple 
-    // instances of the model with different materials
-    // http://www.barradeau.com/nicoptere/dump/materials.html
-
-    // Task 6.5: assign material properties from the texture maps
-    //*/
+    // model material properties; specular (Ks), diffuse (Kd)
+    // assign material properties from the texture maps
 	vec3 Ks = vec3(0.1, 0.1, 0.1);
     vec3 Kd = vec3(texture(diffuseColorSampler, vertex_UV).rgb);
     vec3 Ka = vec3(0.1, 0.1, 0.1);
     float Ns = 10;
-    //*/
 
-    // Task 2.3: model ambient intensity (Ia)
+    // model ambient intensity (Ia)
 	vec3 Ia = Ka * La;
 	fragment_color = vec4(Ia, 1.0);
 
-    // Task 3: model diffuse intensity
-    // Task 3.3: transform light position, vertex position and vertex normal 
+    // model diffuse intensity
+    // transform light position, vertex position and vertex normal 
     // in camera space (N). Attention: vertex normal is a directional vector 
     // (Homogeneous Transformations).
-    // Task 3.4: calculate distance to light and normalized direction (L) in camera space 
+    // calculate distance to light and normalized direction (L) in camera space 
 
 	vec3 vertex_position_cameraspace = vec3(V * M * vec4(vertex_position_modelspace, 1.0));
 	vec3 vertex_normal_cameraspace = vec3(V * M * vec4(vertex_normal_modelspace, 1.0));
@@ -74,36 +59,4 @@ void main()
 	vec3 Id = Kd * Ld;
 	fragment_color = vec4(Ia + Id, 1.0);
 
-    // Task 3.5: compute cos(theta)
-    // cosine of the angle between the normal and the light direction, 
-    // clamped above 0; use clamp(float, min, max)
-    //  - light is at the vertical of the triangle -> 1
-    //  - light is perpendicular to the triangle -> 0
-    //  - light is behind the triangle -> 0
-    
-    // Task 3.6: calculate the diffuse intensity and the new fragment color
-
-    // Task 4: model specular intensity
-    // Task 4.1: compute reflexion direction (R) in camera space
-
-    // Task 4.2: compute surface to viewer direction (E) in camera space
-
-    // Task 4.3: compute cos(alpha)
-    // cosine of the angle between the Eye vector and the Reflect vector,
-    // clamped to 0; use clamp(float, min, max)
-    //  - Looking into the reflection -> 1
-    //  - Looking elsewhere -> < 1
-
-    // Task 4.4: calculate specular factor cos(a)^Ns
-    
-    // Task 4.5: calculate the specular intensity and the new fragment color
-  
-
-    // Task 5: model the light distance effect (add a light_power parameter).
-    // Change camera position to verify the correct behavior.
-    
-    // Task 7: create the spotlight effect
-           
-    // Homework 3: make light properties as uniform variables and use the keyboard  
-    // keys to adjust them (position, light color and power).
 }

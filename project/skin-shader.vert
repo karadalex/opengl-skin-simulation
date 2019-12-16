@@ -19,15 +19,21 @@ uniform mat4 M;
 
 void main()
 {
-    // Output position of the vertex, in clip space : MVP * position
-    gl_Position =  P * V * M * vec4(vertexPosition_modelspace, 1);
+	vec4 vertex = vec4(vertexPosition_modelspace, 1);
 
-    // Task 3.1: propagate the position of the vertex to fragment shader
+	if (vertex.x > 0) {
+		vertex.y = 2;
+	}
+
+    // Output position of the vertex, in clip space : MVP * position
+    gl_Position =  P * V * M * vertex;
+
+    // propagate the position of the vertex to fragment shader
     vertex_position_modelspace = vertexPosition_modelspace;
 
-    // Task 3.2: propagate the normal of the vertex to fragment shader
+    // propagate the normal of the vertex to fragment shader
     vertex_normal_modelspace = vertexNormal_modelspace; 
     
-    // Task 5.2: propagate the UV coordinates   
+    // propagate the UV coordinates   
     vertex_UV = vertexUV;
 }
