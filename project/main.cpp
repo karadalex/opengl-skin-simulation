@@ -38,7 +38,7 @@ void free();
 GLFWwindow* window;
 Camera* camera;
 GLuint shaderProgram;
-GLuint projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation;
+GLuint projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation, oscillationMatrixLocation;
 GLuint lightLocation;
 GLuint diffuceColorSampler, specularColorSampler;
 GLuint diffuseTexture, specularTexture;
@@ -74,6 +74,8 @@ void createContext()
     viewMatrixLocation = glGetUniformLocation(shaderProgram, "V");
     modelMatrixLocation = glGetUniformLocation(shaderProgram, "M");
     lightLocation = glGetUniformLocation(shaderProgram, "light_position_worldspace");
+    
+    oscillationMatrixLocation = glGetUniformLocation(shaderProgram, "OscillationMatrix");
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -142,10 +144,14 @@ void mainLoop()
         mat4 viewMatrix = camera->viewMatrix;
         glm::mat4 modelMatrix = glm::mat4(1.0);
 
+        float t = (float)glfwGetTime();
+        glm::mat4 oscillationMatrix = translate(mat4(), vec3(0, sin(t), 0));
+
         // Task 1.4c: transfer uniforms to GPU
         glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
         glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
         glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
+        glUniformMatrix4fv(oscillationMatrixLocation, 1, GL_FALSE, &oscillationMatrix[0][0]);
         glUniform3f(lightLocation, lightPos.x, lightPos.y, lightPos.z); // light
 
         // Task 6.4: bind textures and transmit diffuse and specular maps to the GPU

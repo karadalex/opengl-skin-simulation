@@ -16,13 +16,14 @@ out vec2 vertex_UV;
 uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
+uniform mat4 OscillationMatrix;
 
 void main()
 {
 	vec4 vertex = vec4(vertexPosition_modelspace, 1);
 
 	if (vertex.x > 0) {
-		vertex.y = 2;
+		vertex = OscillationMatrix * vertex;
 	}
 
     // Output position of the vertex, in clip space : MVP * position
