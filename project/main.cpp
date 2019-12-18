@@ -38,8 +38,8 @@ void free();
 GLFWwindow* window;
 Camera* camera;
 GLuint shaderProgram;
-GLuint projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation, oscillationMatrixLocation;
-GLuint lightLocation;
+GLuint projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation;
+GLuint lightLocation, timeLocation;
 GLuint diffuceColorSampler, specularColorSampler;
 GLuint diffuseTexture, specularTexture;
 GLuint objVAO;
@@ -74,8 +74,7 @@ void createContext()
     viewMatrixLocation = glGetUniformLocation(shaderProgram, "V");
     modelMatrixLocation = glGetUniformLocation(shaderProgram, "M");
     lightLocation = glGetUniformLocation(shaderProgram, "light_position_worldspace");
-    
-    oscillationMatrixLocation = glGetUniformLocation(shaderProgram, "OscillationMatrix");
+	timeLocation = glGetUniformLocation(shaderProgram, "time");
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -151,8 +150,8 @@ void mainLoop()
         glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
         glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
         glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
-        glUniformMatrix4fv(oscillationMatrixLocation, 1, GL_FALSE, &oscillationMatrix[0][0]);
         glUniform3f(lightLocation, lightPos.x, lightPos.y, lightPos.z); // light
+		glUniform1f(timeLocation, t);
 
         // Task 6.4: bind textures and transmit diffuse and specular maps to the GPU
         //*/

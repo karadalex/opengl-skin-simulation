@@ -16,15 +16,16 @@ out vec2 vertex_UV;
 uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
-uniform mat4 OscillationMatrix;
+uniform float time;
+
+mat4 translate(float x, float y, float z);
+
 
 void main()
 {
 	vec4 vertex = vec4(vertexPosition_modelspace, 1);
 
-	if (vertex.x > 0) {
-		vertex = OscillationMatrix * vertex;
-	}
+	vertex = translate(0.0, sin(vertex.x)*cos(time), 0.0) * vertex;
 
     // Output position of the vertex, in clip space : MVP * position
     gl_Position =  P * V * M * vertex;
@@ -37,4 +38,14 @@ void main()
     
     // propagate the UV coordinates   
     vertex_UV = vertexUV;
+}
+
+mat4 translate(float x, float y, float z)
+{
+	return mat4(
+		vec4(1.0, 0.0, 0.0, 0.0),
+        vec4(0.0, 1.0, 0.0, 0.0),
+        vec4(0.0, 0.0, 1.0, 0.0),
+        vec4(x,   y,   z,   1.0)
+	);
 }
