@@ -57,7 +57,7 @@ void createContext()
     );
 
     // load obj
-    loadOBJWithTiny("skin1.obj", objVertices, objUVs, objNormals);
+    loadOBJWithTiny("skin2.obj", objVertices, objUVs, objNormals);
 
     // Homework 4: implement flat shading by transforming the normals of the model.
 
