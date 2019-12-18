@@ -42,10 +42,18 @@ GLuint projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation;
 GLuint lightLocation, timeLocation;
 GLuint diffuceColorSampler, specularColorSampler;
 GLuint diffuseTexture, specularTexture;
-GLuint objVAO;
-GLuint objVerticiesVBO, objUVVBO, objNormalsVBO;
-std::vector<vec3> objVertices, objNormals;
-std::vector<vec2> objUVs;
+
+GLuint skinVAO;
+GLuint skinVerticiesVBO, skinUVVBO, skinNormalsVBO;
+std::vector<vec3> skinVertices, skinNormals;
+std::vector<vec2> skinUVs;
+
+GLuint sphereVAO;
+GLuint sphereVerticiesVBO, sphereUVVBO, sphereNormalsVBO;
+std::vector<vec3> sphereVertices, sphereNormals;
+std::vector<vec2> sphereUVs;
+
+GLuint objectVAOLocation, objectVAO;
 
 
 void createContext()
@@ -55,9 +63,6 @@ void createContext()
         "skin-shader.vert",
         "skin-shader.frag"
     );
-
-    // load obj
-    loadOBJWithTiny("skin2.obj", objVertices, objUVs, objNormals);
 
     // Homework 4: implement flat shading by transforming the normals of the model.
 
@@ -75,49 +80,90 @@ void createContext()
     modelMatrixLocation = glGetUniformLocation(shaderProgram, "M");
     lightLocation = glGetUniformLocation(shaderProgram, "light_position_worldspace");
 	timeLocation = glGetUniformLocation(shaderProgram, "time");
+    objectVAOLocation = glGetUniformLocation(shaderProgram, "objectVAO");
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     
-    // obj
-    // Task 6.1: bind object vertex positions to attribute 0, UV coordinates
+    // load skin
+    loadOBJWithTiny("skin2.obj", skinVertices, skinUVs, skinNormals);
+
     // to attribute 1 and normals to attribute 2
     //*/
-    glGenVertexArrays(1, &objVAO);
-    glBindVertexArray(objVAO);
+    glGenVertexArrays(1, &skinVAO);
+    glBindVertexArray(skinVAO);
 
     // vertex VBO
-    glGenBuffers(1, &objVerticiesVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, objVerticiesVBO);
-    glBufferData(GL_ARRAY_BUFFER, objVertices.size() * sizeof(glm::vec3),
-        &objVertices[0], GL_STATIC_DRAW);
+    glGenBuffers(1, &skinVerticiesVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, skinVerticiesVBO);
+    glBufferData(GL_ARRAY_BUFFER, skinVertices.size() * sizeof(glm::vec3),
+        &skinVertices[0], GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(0);
 
     // Homework 1: were the model normals not given, how would you compute them?
-    glGenBuffers(1, &objNormalsVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, objNormalsVBO);
-    glBufferData(GL_ARRAY_BUFFER, objNormals.size() * sizeof(glm::vec3),
-        &objNormals[0], GL_STATIC_DRAW);
+    glGenBuffers(1, &skinNormalsVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, skinNormalsVBO);
+    glBufferData(GL_ARRAY_BUFFER, skinNormals.size() * sizeof(glm::vec3),
+        &skinNormals[0], GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(1);
 
     // uvs VBO
-    glGenBuffers(1, &objUVVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, objUVVBO);
-    glBufferData(GL_ARRAY_BUFFER, objUVs.size() * sizeof(glm::vec2),
-        &objUVs[0], GL_STATIC_DRAW);
+    glGenBuffers(1, &skinUVVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, skinUVVBO);
+    glBufferData(GL_ARRAY_BUFFER, skinUVs.size() * sizeof(glm::vec2),
+        &skinUVs[0], GL_STATIC_DRAW);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(2);
+
+    // load sphere
+    loadOBJWithTiny("sphere.obj", sphereVertices, sphereUVs, sphereNormals);
+
+    // to attribute 1 and normals to attribute 2
     //*/
+    glGenVertexArrays(1, &sphereVAO);
+    glBindVertexArray(sphereVAO);
+
+    // vertex VBO
+    glGenBuffers(1, &sphereVerticiesVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, sphereVerticiesVBO);
+    glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(glm::vec3),
+        &sphereVertices[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(0);
+
+    // Homework 1: were the model normals not given, how would you compute them?
+    glGenBuffers(1, &sphereNormalsVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, sphereNormalsVBO);
+    glBufferData(GL_ARRAY_BUFFER, sphereNormals.size() * sizeof(glm::vec3),
+        &sphereNormals[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(1);
+
+    // uvs VBO
+    glGenBuffers(1, &sphereUVVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, sphereUVVBO);
+    glBufferData(GL_ARRAY_BUFFER, sphereUVs.size() * sizeof(glm::vec2),
+        &sphereUVs[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(2);
+
 }
 
 void free()
 {
-    glDeleteBuffers(1, &objVerticiesVBO);
-    glDeleteBuffers(1, &objUVVBO);
-    glDeleteBuffers(1, &objNormalsVBO);
-    glDeleteVertexArrays(1, &objVAO);
+    // Delete skin
+    glDeleteBuffers(1, &skinVerticiesVBO);
+    glDeleteBuffers(1, &skinUVVBO);
+    glDeleteBuffers(1, &skinNormalsVBO);
+    glDeleteVertexArrays(1, &skinVAO);
+
+    // Delete sphere
+    glDeleteBuffers(1, &sphereVerticiesVBO);
+    glDeleteBuffers(1, &sphereUVVBO);
+    glDeleteBuffers(1, &sphereNormalsVBO);
+    glDeleteVertexArrays(1, &sphereVAO);
 
     glDeleteTextures(1, &diffuseTexture);
     glDeleteProgram(shaderProgram);
@@ -137,14 +183,13 @@ void mainLoop()
         // camera
         camera->update();
 
-        glBindVertexArray(objVAO);
+        glBindVertexArray(skinVAO);
 
         mat4 projectionMatrix = camera->projectionMatrix;
         mat4 viewMatrix = camera->viewMatrix;
         glm::mat4 modelMatrix = glm::mat4(1.0);
 
         float t = (float)glfwGetTime();
-        glm::mat4 oscillationMatrix = translate(mat4(), vec3(0, sin(t), 0));
 
         // Task 1.4c: transfer uniforms to GPU
         glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
@@ -152,6 +197,8 @@ void mainLoop()
         glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
         glUniform3f(lightLocation, lightPos.x, lightPos.y, lightPos.z); // light
 		glUniform1f(timeLocation, t);
+
+        glUniform1i(objectVAOLocation, skinVAO);
 
         // Task 6.4: bind textures and transmit diffuse and specular maps to the GPU
         //*/
@@ -165,7 +212,11 @@ void mainLoop()
         //*/
 
         // draw
-        glDrawArrays(GL_TRIANGLES, 0, objVertices.size());
+        glDrawArrays(GL_TRIANGLES, 0, skinVertices.size());
+
+        glBindVertexArray(sphereVAO);
+        glUniform1i(objectVAOLocation, sphereVAO);
+        glDrawArrays(GL_TRIANGLES, 0, sphereVertices.size());
 
         glfwSwapBuffers(window);
 

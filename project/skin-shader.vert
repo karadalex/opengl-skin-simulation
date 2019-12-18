@@ -17,6 +17,7 @@ uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
 uniform float time;
+uniform int objectVAO;
 
 mat4 translate(float x, float y, float z);
 
@@ -25,7 +26,11 @@ void main()
 {
 	vec4 vertex = vec4(vertexPosition_modelspace, 1);
 
-	vertex = translate(0.0, sin(vertex.x)*cos(time), 0.0) * vertex;
+	if (objectVAO == 1) {
+		vertex = translate(0.0, sin(vertex.x)*cos(time), 0.0) * vertex;
+	} else if (objectVAO == 2) {
+        vertex = translate(0.0, 2, 0.0) * vertex;
+    }
 
     // Output position of the vertex, in clip space : MVP * position
     gl_Position =  P * V * M * vertex;
