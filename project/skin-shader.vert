@@ -20,6 +20,7 @@ uniform float time;
 uniform int objectVAO;
 
 mat4 translate(float x, float y, float z);
+mat4 scale(float x, float y, float z);
 
 
 void main()
@@ -29,7 +30,7 @@ void main()
 	if (objectVAO == 1) {
 		vertex = translate(0.0, sin(vertex.x)*cos(time), 0.0) * vertex;
 	} else if (objectVAO == 2) {
-        vertex = translate(0.0, 2, 0.0) * vertex;
+        vertex = translate(0.0, 2, 0.0) * scale(0.5, 0.5, 0.5) * vertex;
     }
 
     // Output position of the vertex, in clip space : MVP * position
@@ -53,4 +54,14 @@ mat4 translate(float x, float y, float z)
         vec4(0.0, 0.0, 1.0, 0.0),
         vec4(x,   y,   z,   1.0)
 	);
+}
+
+mat4 scale(float x, float y, float z)
+{
+    return mat4(
+        vec4(x,   0.0, 0.0, 0.0),
+        vec4(0.0, y,   0.0, 0.0),
+        vec4(0.0, 0.0, z,   0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
 }
