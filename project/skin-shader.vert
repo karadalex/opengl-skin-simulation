@@ -30,7 +30,7 @@ void main()
 	if (objectVAO == 1) {
 		vertex = translate(0.0, sin(vertex.x)*cos(time), 0.0) * vertex;
 	} else if (objectVAO == 2) {
-        vertex = translate(0.0, 2, 0.0) * scale(0.5, 0.5, 0.5) * vertex;
+        vertex = translate(0.0, 10-time, 0.0) * scale(0.5, 0.5, 0.5) * vertex;
     }
 
     // Output position of the vertex, in clip space : MVP * position
