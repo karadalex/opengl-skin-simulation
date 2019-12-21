@@ -21,6 +21,8 @@
 #include <common/model.h>
 #include <common/texture.h>
 
+#include "Skin.h"
+
 using namespace std;
 using namespace glm;
 
@@ -43,34 +45,25 @@ GLuint lightLocation, timeLocation;
 GLuint diffuceColorSampler, specularColorSampler;
 GLuint diffuseTexture, specularTexture;
 
-GLuint skinVAO;
-GLuint skinVerticiesVBO, skinUVVBO, skinNormalsVBO;
-std::vector<vec3> skinVertices, skinNormals;
-std::vector<vec2> skinUVs;
-
-GLuint sphereVAO;
-GLuint sphereVerticiesVBO, sphereUVVBO, sphereNormalsVBO;
-std::vector<vec3> sphereVertices, sphereNormals;
-std::vector<vec2> sphereUVs;
-
+Skin* skin;
+Drawable* sphere;
 GLuint objectVAOLocation, objectVAO;
 
+void loadVBO(GLuint VBO, std::vector<vec3> vertices);
 
-void createContext()
-{
+
+void createContext() {
     // Create and compile our GLSL program from the shaders
     shaderProgram = loadShaders(
         "skin-shader.vert",
         "skin-shader.frag"
     );
 
-    // Homework 4: implement flat shading by transforming the normals of the model.
-
-    // Task 6.2: load diffuse and specular texture maps
-    diffuseTexture = loadSOIL("1K-human_skin_4_diffuseOriginal.jpg");
+    // load diffuse and specular texture maps
+    diffuseTexture = loadSOIL("textures/1K-human_skin_4_diffuseOriginal.jpg");
     // specularTexture = loadSOIL("suzanne_specular.bmp");
 
-    // Task 6.3: get a pointer to the texture samplers (diffuseColorSampler, specularColorSampler)
+    // get a pointer to the texture samplers (diffuseColorSampler, specularColorSampler)
     diffuceColorSampler = glGetUniformLocation(shaderProgram, "diffuceColorSampler");
     // specularColorSampler = glGetUniformLocation(shaderProgram, "specularColorSampler");
 
@@ -84,106 +77,38 @@ void createContext()
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    
-    // load skin
-    loadOBJWithTiny("skin2.obj", skinVertices, skinUVs, skinNormals);
-
-    // to attribute 1 and normals to attribute 2
-    //*/
-    glGenVertexArrays(1, &skinVAO);
-    glBindVertexArray(skinVAO);
-
-    // vertex VBO
-    glGenBuffers(1, &skinVerticiesVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, skinVerticiesVBO);
-    glBufferData(GL_ARRAY_BUFFER, skinVertices.size() * sizeof(glm::vec3),
-        &skinVertices[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(0);
-
-    // Homework 1: were the model normals not given, how would you compute them?
-    glGenBuffers(1, &skinNormalsVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, skinNormalsVBO);
-    glBufferData(GL_ARRAY_BUFFER, skinNormals.size() * sizeof(glm::vec3),
-        &skinNormals[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(1);
-
-    // uvs VBO
-    glGenBuffers(1, &skinUVVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, skinUVVBO);
-    glBufferData(GL_ARRAY_BUFFER, skinUVs.size() * sizeof(glm::vec2),
-        &skinUVs[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(2);
-
-    // load sphere
-    loadOBJWithTiny("sphere.obj", sphereVertices, sphereUVs, sphereNormals);
-
-    // to attribute 1 and normals to attribute 2
-    //*/
-    glGenVertexArrays(1, &sphereVAO);
-    glBindVertexArray(sphereVAO);
-
-    // vertex VBO
-    glGenBuffers(1, &sphereVerticiesVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, sphereVerticiesVBO);
-    glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(glm::vec3),
-        &sphereVertices[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(0);
-
-    // Homework 1: were the model normals not given, how would you compute them?
-    glGenBuffers(1, &sphereNormalsVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, sphereNormalsVBO);
-    glBufferData(GL_ARRAY_BUFFER, sphereNormals.size() * sizeof(glm::vec3),
-        &sphereNormals[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(1);
-
-    // uvs VBO
-    glGenBuffers(1, &sphereUVVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, sphereUVVBO);
-    glBufferData(GL_ARRAY_BUFFER, sphereUVs.size() * sizeof(glm::vec2),
-        &sphereUVs[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-    glEnableVertexAttribArray(2);
+    skin = new Skin("models/skin2.obj");
+	sphere = new Drawable("models/sphere.obj");
 
 }
 
-void free()
-{
-    // Delete skin
-    glDeleteBuffers(1, &skinVerticiesVBO);
-    glDeleteBuffers(1, &skinUVVBO);
-    glDeleteBuffers(1, &skinNormalsVBO);
-    glDeleteVertexArrays(1, &skinVAO);
 
-    // Delete sphere
-    glDeleteBuffers(1, &sphereVerticiesVBO);
-    glDeleteBuffers(1, &sphereUVVBO);
-    glDeleteBuffers(1, &sphereNormalsVBO);
-    glDeleteVertexArrays(1, &sphereVAO);
+void free() {
+    delete skin;
+    delete sphere;
 
     glDeleteTextures(1, &diffuseTexture);
     glDeleteProgram(shaderProgram);
     glfwTerminate();
 }
 
-void mainLoop()
-{
+
+void mainLoop() {
     glm::vec3 lightPos = glm::vec3(0, 0, 4);
 
-    do
-    {
+    do {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
 
-        // camera
         camera->update();
 
-        glBindVertexArray(skinVAO);
+		glUniform1i(objectVAOLocation, skin->skin->VAO);
+        skin->draw();
+
+		glUniform1i(objectVAOLocation, sphere->VAO);
+		sphere->bind();
+		sphere->draw();
 
         mat4 projectionMatrix = camera->projectionMatrix;
         mat4 viewMatrix = camera->viewMatrix;
@@ -191,17 +116,14 @@ void mainLoop()
 
         float t = (float)glfwGetTime();
 
-        // Task 1.4c: transfer uniforms to GPU
+        // transfer uniforms to GPU
         glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
         glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &viewMatrix[0][0]);
         glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
         glUniform3f(lightLocation, lightPos.x, lightPos.y, lightPos.z); // light
 		glUniform1f(timeLocation, t);
 
-        glUniform1i(objectVAOLocation, skinVAO);
-
-        // Task 6.4: bind textures and transmit diffuse and specular maps to the GPU
-        //*/
+		// bind textures and transmit diffuse and specular maps to the GPU
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseTexture);
         glUniform1i(diffuceColorSampler, 1);
@@ -209,21 +131,14 @@ void mainLoop()
         // glActiveTexture(GL_TEXTURE1);
         // glBindTexture(GL_TEXTURE_2D, specularTexture);
         // glUniform1i(specularColorSampler, 1);
-        //*/
-
-        // draw
-        glDrawArrays(GL_TRIANGLES, 0, skinVertices.size());
-
-        glBindVertexArray(sphereVAO);
-        glUniform1i(objectVAOLocation, sphereVAO);
-        glDrawArrays(GL_TRIANGLES, 0, sphereVertices.size());
 
         glfwSwapBuffers(window);
 
         glfwPollEvents();
-    } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-        glfwWindowShouldClose(window) == 0);
+    } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);
+
 }
+
 
 void initialize()
 {
@@ -291,6 +206,7 @@ void initialize()
     // Create camera
     camera = new Camera(window);
 }
+
 
 int main(void)
 {

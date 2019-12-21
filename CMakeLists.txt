@@ -99,6 +99,8 @@ add_definitions(
 ###############################################################################
 add_executable(project
   project/main.cpp
+  project/Skin.h
+  project/Skin.cpp
 
   common/util.cpp
   common/util.h
