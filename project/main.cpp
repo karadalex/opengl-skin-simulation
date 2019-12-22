@@ -53,6 +53,10 @@ GLuint objectVAOLocation, objectVAO;
 GLuint skinTransformationsLocation;
 vector<mat4> skinTransformations;
 
+// Sphere transformations
+GLuint sphereTransformationsLocation;
+vector<mat4> sphereTransformations;
+
 void loadVBO(GLuint VBO, std::vector<vec3> vertices);
 
 
@@ -79,6 +83,7 @@ void createContext() {
 	timeLocation = glGetUniformLocation(shaderProgram, "time");
     objectVAOLocation = glGetUniformLocation(shaderProgram, "objectVAO");
     skinTransformationsLocation = glGetUniformLocation(shaderProgram, "skinTransformations");
+    sphereTransformationsLocation = glGetUniformLocation(shaderProgram, "sphereTransformations");
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -135,6 +140,17 @@ void mainLoop() {
             skinTransformations.push_back(translate(mat4(1.0), vec3(0.0, sin(vertex.x) * cos(t), 0.0)));
         }
         glUniformMatrix4fv(skinTransformationsLocation, skinTransformations.size(), GL_FALSE, &skinTransformations[0][0][0]);
+
+        // load sphere transformations
+		sphereTransformations.clear();
+        for each (auto vertex in sphere->indexedVertices)
+        {
+            mat4 sphereTransformation = mat4();
+            sphereTransformation = scale(sphereTransformation, vec3(0.5, 0.5, 0.5));
+            sphereTransformation = translate(sphereTransformation, vec3(0.0, 10-t, 0.0));
+            sphereTransformations.push_back(sphereTransformation);
+        }
+        glUniformMatrix4fv(sphereTransformationsLocation, sphereTransformations.size(), GL_FALSE, &sphereTransformations[0][0][0]);
 
 		// bind textures and transmit diffuse and ambient maps to the GPU
         glActiveTexture(GL_TEXTURE0);

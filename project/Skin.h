@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include "Particle.h"
 
 class Drawable;
 
@@ -16,6 +17,9 @@ class Skin {
 public:
     Drawable* skin;
     glm::mat4 modelMatrix;
+    // Number of particles in Skin particle system. It is equal to number of vertices of object
+    int numOfParticles;
+    std::vector<Particle*> particles;
 
     #ifdef USE_QUATERNIONS
         glm::quat q;
@@ -24,10 +28,9 @@ public:
     #endif
 
     Skin(std::string path);
-    ~Skin();
-
     void draw(unsigned int drawable = 0);
     void update(float t = 0, float dt = 0);
+    ~Skin();
 };
 
 #endif

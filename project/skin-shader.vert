@@ -48,3 +48,20 @@ void main()
     vertex_UV = vertexUV;
 }
 
+mat4 scale(float x, float y, float z){
+    return mat4(
+        vec4(x,   0.0, 0.0, 0.0),
+        vec4(0.0, y,   0.0, 0.0),
+        vec4(0.0, 0.0, z,   0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+}
+
+mat4 translate(float x, float y, float z){
+    return mat4(
+        vec4(1.0, 0.0, 0.0, 0.0),
+        vec4(0.0, 1.0, 0.0, 0.0),
+        vec4(0.0, 0.0, 1.0, 0.0),
+        vec4(x,   y,   z,   1.0)
+    );
+}
