@@ -42,8 +42,8 @@ Camera* camera;
 GLuint shaderProgram;
 GLuint projectionMatrixLocation, viewMatrixLocation, modelMatrixLocation;
 GLuint lightLocation, timeLocation;
-GLuint diffuceColorSampler, specularColorSampler;
-GLuint diffuseTexture, specularTexture;
+GLuint diffuceColorSampler, ambientColorSampler;
+GLuint diffuseTexture, ambientTexture;
 
 Skin* skin;
 Drawable* sphere;
@@ -63,13 +63,13 @@ void createContext() {
         "skin-shader.frag"
     );
 
-    // load diffuse and specular texture maps
+    // load diffuse and ambient texture maps
     diffuseTexture = loadSOIL("textures/1K-human_skin_4_diffuseOriginal.jpg");
-    // specularTexture = loadSOIL("suzanne_specular.bmp");
+    ambientTexture = loadSOIL("textures/1K-human_skin_4_ao.jpg");
 
-    // get a pointer to the texture samplers (diffuseColorSampler, specularColorSampler)
+    // get a pointer to the texture samplers (diffuseColorSampler, ambientColorSampler)
     diffuceColorSampler = glGetUniformLocation(shaderProgram, "diffuceColorSampler");
-    // specularColorSampler = glGetUniformLocation(shaderProgram, "specularColorSampler");
+    ambientColorSampler = glGetUniformLocation(shaderProgram, "ambientColorSampler");
 
     // get pointers to the uniform variables
     projectionMatrixLocation = glGetUniformLocation(shaderProgram, "P");
@@ -136,14 +136,14 @@ void mainLoop() {
         }
         glUniformMatrix4fv(skinTransformationsLocation, skinTransformations.size(), GL_FALSE, &skinTransformations[0][0][0]);
 
-		// bind textures and transmit diffuse and specular maps to the GPU
+		// bind textures and transmit diffuse and ambient maps to the GPU
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseTexture);
         glUniform1i(diffuceColorSampler, 1);
 
-        // glActiveTexture(GL_TEXTURE1);
-        // glBindTexture(GL_TEXTURE_2D, specularTexture);
-        // glUniform1i(specularColorSampler, 1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, ambientTexture);
+        glUniform1i(ambientColorSampler, 1);
 
         glfwSwapBuffers(window);
 

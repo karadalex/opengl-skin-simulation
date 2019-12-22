@@ -15,7 +15,7 @@ uniform int objectVAO;
 // Task 5.3: define uniform variables for the texture coordinates
 // (diffuseColorSampler, specularColorSampler)
 uniform sampler2D diffuseColorSampler;
-uniform sampler2D specularColorSampler;
+uniform sampler2D ambientColorSampler;
 
 // output data
 out vec4 fragment_color;
@@ -34,10 +34,11 @@ void main()
     // assign material properties from the texture maps
 	vec3 Ks = vec3(0.1, 0.1, 0.1);
 	vec3 Kd = vec3(0.1, 0.1, 0.1);
+    vec3 Ka = vec3(0.1, 0.1, 0.1);
 	if (objectVAO == 1) {
 		Kd = vec3(texture(diffuseColorSampler, vertex_UV).rgb);
+		Ka = vec3(texture(ambientColorSampler, vertex_UV).rgb);
 	}
-    vec3 Ka = vec3(0.1, 0.1, 0.1);
     float Ns = 10;
 
     // model ambient intensity (Ia)
@@ -61,6 +62,6 @@ void main()
 
 	// vec3 Id = Kd * Ld * cos_theta;
 	vec3 Id = Kd * Ld;
-	fragment_color = vec4(Ia + Id, 1.0);
+	fragment_color = vec4(0.2 * Ia + 0.7 * Id, 1.0);
 
 }
