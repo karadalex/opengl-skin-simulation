@@ -5,6 +5,7 @@
 layout(location = 0) in vec3 vertexPosition_modelspace;
 layout(location = 1) in vec3 vertexNormal_modelspace;
 layout(location = 2) in vec2 vertexUV;
+in int gl_VertexID;
 
 // Output variables (position_modelspace, normal_modelspace and UV coordinates), 
 // that will be interpolated for each fragment
@@ -18,6 +19,7 @@ uniform mat4 V;
 uniform mat4 M;
 uniform float time;
 uniform int objectVAO;
+uniform mat4 skinTransformations[250];
 
 mat4 translate(float x, float y, float z);
 mat4 scale(float x, float y, float z);
@@ -28,7 +30,7 @@ void main()
 	vec4 vertex = vec4(vertexPosition_modelspace, 1);
 
 	if (objectVAO == 1) {
-		vertex = translate(0.0, sin(vertex.x)*cos(time), 0.0) * vertex;
+		vertex = skinTransformations[gl_VertexID] * vertex;
 	} if (objectVAO == 2) {
         vertex = translate(0.0, 10-time, 0.0) * scale(0.5, 0.5, 0.5) * vertex;
     }
@@ -46,22 +48,3 @@ void main()
     vertex_UV = vertexUV;
 }
 
-mat4 translate(float x, float y, float z)
-{
-	return mat4(
-		vec4(1.0, 0.0, 0.0, 0.0),
-        vec4(0.0, 1.0, 0.0, 0.0),
-        vec4(0.0, 0.0, 1.0, 0.0),
-        vec4(x,   y,   z,   1.0)
-	);
-}
-
-mat4 scale(float x, float y, float z)
-{
-    return mat4(
-        vec4(x,   0.0, 0.0, 0.0),
-        vec4(0.0, y,   0.0, 0.0),
-        vec4(0.0, 0.0, z,   0.0),
-        vec4(0.0, 0.0, 0.0, 1.0)
-    );
-}

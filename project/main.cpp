@@ -49,6 +49,10 @@ Skin* skin;
 Drawable* sphere;
 GLuint objectVAOLocation, objectVAO;
 
+// Skin transformations
+GLuint skinTransformationsLocation;
+vector<mat4> skinTransformations;
+
 void loadVBO(GLuint VBO, std::vector<vec3> vertices);
 
 
@@ -74,10 +78,11 @@ void createContext() {
     lightLocation = glGetUniformLocation(shaderProgram, "light_position_worldspace");
 	timeLocation = glGetUniformLocation(shaderProgram, "time");
     objectVAOLocation = glGetUniformLocation(shaderProgram, "objectVAO");
+    skinTransformationsLocation = glGetUniformLocation(shaderProgram, "skinTransformations");
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    skin = new Skin("models/skin2.obj");
+    skin = new Skin("models/skin3.obj");
 	sphere = new Drawable("models/sphere.obj");
 
 }
@@ -122,6 +127,14 @@ void mainLoop() {
         glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, &modelMatrix[0][0]);
         glUniform3f(lightLocation, lightPos.x, lightPos.y, lightPos.z); // light
 		glUniform1f(timeLocation, t);
+
+        // load skin transformations
+		skinTransformations.clear();
+        for each (auto vertex in skin->skin->indexedVertices)
+        {
+            skinTransformations.push_back(translate(mat4(1.0), vec3(0.0, sin(vertex.x) * cos(t), 0.0)));
+        }
+        glUniformMatrix4fv(skinTransformationsLocation, skinTransformations.size(), GL_FALSE, &skinTransformations[0][0][0]);
 
 		// bind textures and transmit diffuse and specular maps to the GPU
         glActiveTexture(GL_TEXTURE0);
