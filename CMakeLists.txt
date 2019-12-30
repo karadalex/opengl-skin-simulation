@@ -101,8 +101,10 @@ add_executable(project
   project/main.cpp
   project/Skin.h
   project/Skin.cpp
-  project/Particle.cpp
+  project/RigidBody.h
+  project/RigidBody.cpp
   project/Particle.h
+  project/Particle.cpp
 
   common/util.cpp
   common/util.h

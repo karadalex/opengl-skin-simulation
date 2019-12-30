@@ -46,6 +46,7 @@ bool fileExists(const std::string& abs_filename);
  * Print the contents of a vector
 */
 void print(std::vector<unsigned int> const &a);
+void print(glm::vec3 const &vec);
 void print(std::vector<glm::vec3> const &a);
 
 #endif

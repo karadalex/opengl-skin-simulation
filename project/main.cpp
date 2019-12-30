@@ -57,6 +57,9 @@ vector<mat4> skinTransformations;
 GLuint sphereTransformationsLocation;
 vector<mat4> sphereTransformations;
 
+// Standard acceleration due to gravity
+#define g 9.80665f
+
 void loadVBO(GLuint VBO, std::vector<vec3> vertices);
 
 
@@ -90,6 +93,13 @@ void createContext() {
     skin = new Skin("models/skin3.obj");
 	sphere = new Drawable("models/sphere.obj");
 
+	// cout << "indexedVertices skin array size: " << skin->skin->indexedVertices.size() << endl;
+	// cout << "indices skin array size: " << skin->skin->indices.size() << endl;
+	// print(skin->skin->indices);
+	// cout << endl;
+	// print(skin->skin->vertices);
+
+    print(skin->particles.at(0)->neighboursD1);
 }
 
 
@@ -105,8 +115,13 @@ void free() {
 
 void mainLoop() {
     glm::vec3 lightPos = glm::vec3(0, 0, 4);
+    float t = glfwGetTime();
 
     do {
+        // calculate dt
+        float currentTime = glfwGetTime();
+        float dt = currentTime - t;
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
@@ -114,6 +129,16 @@ void mainLoop() {
         camera->update();
 
 		glUniform1i(objectVAOLocation, skin->skin->VAO);
+		for each (auto particle in skin->particles)
+		{
+			particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
+				vector<float> f(6, 0.0f);
+				f[1] = - particle->m * g * 0.00000001f;
+				return f;
+			};
+		}
+        print(skin->particles.at(0)->x);
+		skin->update(t, dt);
         skin->draw();
 
 		glUniform1i(objectVAOLocation, sphere->VAO);
@@ -135,9 +160,10 @@ void mainLoop() {
 
         // load skin transformations
 		skinTransformations.clear();
-        for each (auto vertex in skin->skin->indexedVertices)
+        for each (auto particle in skin->particles)
         {
-            skinTransformations.push_back(translate(mat4(1.0), vec3(0.0, sin(vertex.x) * cos(t), 0.0)));
+            // skinTransformations.push_back(translate(mat4(1.0), vec3(0.0, sin(particle->x.x) * cos(t), 0.0)));
+			skinTransformations.push_back(translate(mat4(1.0), particle->x));
         }
         glUniformMatrix4fv(skinTransformationsLocation, skinTransformations.size(), GL_FALSE, &skinTransformations[0][0][0]);
 
@@ -162,6 +188,9 @@ void mainLoop() {
         glUniform1i(ambientColorSampler, 1);
 
         glfwSwapBuffers(window);
+
+        // Update time by dt
+        t += dt;
 
         glfwPollEvents();
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);

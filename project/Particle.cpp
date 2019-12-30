@@ -7,26 +7,51 @@ using namespace glm;
 using namespace std;
 
 
-Particle::Particle(vec3 pos, vec3 vel, vec3 _force, float m) {
-    position = pos;
-    velocity = vel;
-    force = _force;
-    mass = m;
-    cout << "new particle created at position: " << position.x << endl;
+Particle::Particle(vec3 pos, vec3 vel, vec3 _force, float mass) {
+    x = pos;
+    v = vel;
+    m = mass;
+    P = m * v;
+    cout << "new particle created at position: " << x.x << " " << x.y << " " << x.z << endl;
 }
 
 
-void update(float dt) {
+void Particle::addNeighbourD1(unsigned int neigbourIndex) {
+	bool neigbourIndexAlreadyExists = false;
+	for each (unsigned int otherNeighbour in neighboursD1) {
+		if (otherNeighbour == neigbourIndex)
+		{
+			neigbourIndexAlreadyExists = true;
+		}
+	}
+
+	if (!neigbourIndexAlreadyExists) {
+		neighboursD1.push_back(neigbourIndex);
+	}
+    
+    if (neighboursD1.size() < 6) {
+        isInBoundary = true;
+    }
+}
+
+
+void Particle::addNeighbourD2(unsigned int neigbourIndex) {
+    neighboursD2.push_back(neigbourIndex);
+}
+
+
+void Particle::update(float t, float dt) {
+    //integration
+    advanceState(t, dt);
+}
+
+
+void Particle::draw() {
     // 
 }
 
 
-void draw() {
-    // 
-}
-
-
-void applyForce(vec3 $force) {
+void Particle::applyForce(vec3 $force) {
     // 
 }
 

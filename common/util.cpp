@@ -81,9 +81,13 @@ void print(std::vector<unsigned int> const &a) {
       std::cout << a.at(i) << ' ';
 }
 
+void print(glm::vec3 const &vec) {
+    std::cout << vec.x << ' ' << vec.y << ' ' << vec.z << ' ' << endl;
+}
+
 void print(std::vector<glm::vec3> const &a) {
-   std::cout << "The vector elements are : ";
-   
-   for(int i=0; i < a.size(); i++)
-      std::cout << a.at(i).x << ' ' << a.at(i).y << ' ' << a.at(i).z << ' ' << endl;
+    std::cout << "The vector elements are : ";
+
+    for(int i=0; i < a.size(); i++)
+        print(a.at(i));
 }

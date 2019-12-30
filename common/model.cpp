@@ -329,6 +329,7 @@ void indexVBO(
 Drawable::Drawable(string path) {
     if (path.substr(path.size() - 3, 3) == "obj") {
         loadOBJWithTiny(path.c_str(), vertices, uvs, normals, VEC_UINT_DEFAUTL_VALUE);
+        // loadOBJ(path.c_str(), vertices, uvs, normals, VEC_UINT_DEFAUTL_VALUE);
     } else if (path.substr(path.size() - 3, 3) == "vtp") {
         loadVTP(path.c_str(), vertices, uvs, normals, VEC_UINT_DEFAUTL_VALUE);
     } else {

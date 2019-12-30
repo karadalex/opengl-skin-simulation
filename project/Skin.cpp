@@ -19,12 +19,36 @@ Skin::Skin(string path) {
         R = mat3(1, 0, 0, 0, 1, 0, 0, 0, 1);
     #endif
 
+    // Build particles
     numOfParticles = skin->indexedVertices.size();
 	for each (auto vertex in skin->indexedVertices)
 	{
-        vertexParticle = new Particle(vertex, vec3(0), vec3(0), 1.0f);
+        vertexParticle = new Particle(vertex, vec3(0), vec3(0), 0.01f/numOfParticles);
         particles.push_back(vertexParticle);
 	}
+
+    // Get neighbors of each vertex/particle
+	// loop over triangle indices, get 3 vertices each time
+	for (int i = 0; i < skin->indices.size(); i+=3)
+	{
+		unsigned int indexOfVertexA = skin->indices.at(i);
+		unsigned int indexOfVertexB = skin->indices.at(i+1);
+		unsigned int indexOfVertexC = skin->indices.at(i+2);
+
+        Particle* vertexA = particles.at(indexOfVertexA);
+        Particle* vertexB = particles.at(indexOfVertexB);
+        Particle* vertexC = particles.at(indexOfVertexC);
+
+        vertexA->addNeighbourD1(indexOfVertexB);
+        vertexA->addNeighbourD1(indexOfVertexC);
+
+        vertexB->addNeighbourD1(indexOfVertexA);
+        vertexB->addNeighbourD1(indexOfVertexC);
+
+        vertexC->addNeighbourD1(indexOfVertexA);
+        vertexC->addNeighbourD1(indexOfVertexB);
+	}
+	
 }
 
 Skin::~Skin() {
@@ -38,7 +62,10 @@ void Skin::draw(unsigned int drawable) {
 
 void Skin::update(float t, float dt) {
     // numerical integration
-    // advanceState(t, dt);
+	for each (auto skinParticle in particles)
+	{
+		skinParticle->update(t, dt);
+	}
 
     // compute model matrix
     mat4 scale = glm::scale(mat4(), vec3(1, 1, 1));
