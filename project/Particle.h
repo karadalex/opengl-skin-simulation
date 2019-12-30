@@ -33,7 +33,7 @@ class Particle : public RigidBody {
          * Check if particle is in the boundary of mesh
          * A vertex is in the boundary if it has less than 6 neighbours.
          */
-        float isInBoundary = false;
+        float isInBoundary;
 
         Particle(vec3 pos, vec3 vel, vec3 force, float m);
         void addNeighbourD1(unsigned int neigbourIndex);

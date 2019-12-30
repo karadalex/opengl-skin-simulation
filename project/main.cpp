@@ -129,13 +129,21 @@ void mainLoop() {
         camera->update();
 
 		glUniform1i(objectVAOLocation, skin->skin->VAO);
-		for each (auto particle in skin->particles)
-		{
-			particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
-				vector<float> f(6, 0.0f);
-				f[1] = - particle->m * g * 0.00000001f;
-				return f;
-			};
+		for each (auto particle in skin->particles) {
+			// If vertex is in the boundary of the mesh, it should not move
+            if (particle->isInBoundary) {
+                particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
+                    vector<float> f(6, 0.0f);
+                    return f;
+                };
+            }
+            else {
+                particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
+                    vector<float> f(6, 0.0f);
+                    f[1] = - particle->m * g * 0.00001f;
+                    return f;
+                };
+            }
 		}
         print(skin->particles.at(0)->x);
 		skin->update(t, dt);

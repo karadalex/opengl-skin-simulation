@@ -12,6 +12,7 @@ Particle::Particle(vec3 pos, vec3 vel, vec3 _force, float mass) {
     v = vel;
     m = mass;
     P = m * v;
+	isInBoundary = true;
     cout << "new particle created at position: " << x.x << " " << x.y << " " << x.z << endl;
 }
 
@@ -29,8 +30,8 @@ void Particle::addNeighbourD1(unsigned int neigbourIndex) {
 		neighboursD1.push_back(neigbourIndex);
 	}
     
-    if (neighboursD1.size() < 6) {
-        isInBoundary = true;
+    if (neighboursD1.size() > 5) {
+        isInBoundary = false;
     }
 }
 
