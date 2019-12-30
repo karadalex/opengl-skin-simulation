@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <glm/glm.hpp>
 
 /* We can use a function like this to print some GL capabilities of our adapter
 to the log file. handy if we want to debug problems on other people's computers
@@ -40,5 +41,11 @@ std::string getBaseDir(const std::string& filepath);
 * Check if file exists.
 */
 bool fileExists(const std::string& abs_filename);
+
+/** 
+ * Print the contents of a vector
+*/
+void print(std::vector<unsigned int> const &a);
+void print(std::vector<glm::vec3> const &a);
 
 #endif

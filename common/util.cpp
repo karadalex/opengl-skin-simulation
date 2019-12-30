@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <iostream>
 #include <cmath>
+#include <glm/glm.hpp>
 using namespace std;
 #include "util.h"
 
@@ -71,4 +72,18 @@ bool fileExists(const std::string & abs_filename) {
     }
 
     return ret;
+}
+
+void print(std::vector<unsigned int> const &a) {
+   std::cout << "The vector elements are : ";
+   
+   for(int i=0; i < a.size(); i++)
+      std::cout << a.at(i) << ' ';
+}
+
+void print(std::vector<glm::vec3> const &a) {
+   std::cout << "The vector elements are : ";
+   
+   for(int i=0; i < a.size(); i++)
+      std::cout << a.at(i).x << ' ' << a.at(i).y << ' ' << a.at(i).z << ' ' << endl;
 }
