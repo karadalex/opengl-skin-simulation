@@ -25,7 +25,7 @@ Skin::Skin(string path) {
 	{
         vertexParticle = new Particle(
             vertex, vec3(0), 1.0f,
-            1.0f, vertex, 50, 1.5, 2
+            1.0f, vertex, 50, 4, 2
         );
         particles.push_back(vertexParticle);
 	}
@@ -42,14 +42,14 @@ Skin::Skin(string path) {
         Particle* vertexB = particles.at(indexOfVertexB);
         Particle* vertexC = particles.at(indexOfVertexC);
 
-        vertexA->addNeighbourD1(indexOfVertexB);
-        vertexA->addNeighbourD1(indexOfVertexC);
+        vertexA->addNeighbourD1(vertexB);
+        vertexA->addNeighbourD1(vertexC);
 
-        vertexB->addNeighbourD1(indexOfVertexA);
-        vertexB->addNeighbourD1(indexOfVertexC);
+        vertexB->addNeighbourD1(vertexA);
+        vertexB->addNeighbourD1(vertexC);
 
-        vertexC->addNeighbourD1(indexOfVertexA);
-        vertexC->addNeighbourD1(indexOfVertexB);
+        vertexC->addNeighbourD1(vertexA);
+        vertexC->addNeighbourD1(vertexB);
 	}
 	
 }

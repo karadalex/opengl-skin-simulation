@@ -25,13 +25,13 @@ class Particle : public RigidBody {
          * list of indices of all adjacent neighbours
          * distance = 1 
          */
-        vector<unsigned int> neighboursD1;
+        vector<Particle*> neighboursD1;
 
         /**
          * list of indices of all neighbours
          * with distance = 2 which are not adjacent
          */
-        vector<unsigned int> neighboursD2;
+        vector<Particle*> neighboursD2;
 
         /**
          * Check if particle is in the boundary of mesh
@@ -41,8 +41,8 @@ class Particle : public RigidBody {
 
         Particle(vec3 pos, vec3 vel, float mass, float length, 
             vec3 anchor, float stiffness, float damping, float restLength);
-        void addNeighbourD1(unsigned int neigbourIndex);
-        void addNeighbourD2(unsigned int neigbourIndex);
+		void Particle::addNeighbourD1(Particle* neigbour);
+		void Particle::addNeighbourD2(Particle* neigbour);
         void update(float t, float dt);
         void draw();
         void applyForce(vec3 $force);

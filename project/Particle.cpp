@@ -32,17 +32,17 @@ Particle::Particle(vec3 pos, vec3 vel, float mass, float length,
 }
 
 
-void Particle::addNeighbourD1(unsigned int neigbourIndex) {
-	bool neigbourIndexAlreadyExists = false;
-	for each (unsigned int otherNeighbour in neighboursD1) {
-		if (otherNeighbour == neigbourIndex)
+void Particle::addNeighbourD1(Particle* neigbour) {
+	bool neigbourAlreadyExists = false;
+	for each (Particle* otherNeighbour in neighboursD1) {
+		if (otherNeighbour == neigbour)
 		{
-			neigbourIndexAlreadyExists = true;
+			neigbourAlreadyExists = true;
 		}
 	}
 
-	if (!neigbourIndexAlreadyExists) {
-		neighboursD1.push_back(neigbourIndex);
+	if (!neigbourAlreadyExists) {
+		neighboursD1.push_back(neigbour);
 	}
     
     if (neighboursD1.size() > 5) {
@@ -51,8 +51,8 @@ void Particle::addNeighbourD1(unsigned int neigbourIndex) {
 }
 
 
-void Particle::addNeighbourD2(unsigned int neigbourIndex) {
-    neighboursD2.push_back(neigbourIndex);
+void Particle::addNeighbourD2(Particle* neigbour) {
+    neighboursD2.push_back(neigbour);
 }
 
 
