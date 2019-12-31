@@ -7,13 +7,28 @@ using namespace glm;
 using namespace std;
 
 
-Particle::Particle(vec3 pos, vec3 vel, vec3 _force, float mass) {
+Particle::Particle(vec3 pos, vec3 vel, float mass, float length, 
+    vec3 anchor, float stiffness, float damping, float restLength) {
+    
     x = pos;
     v = vel;
     m = mass;
+    l = length;
+    a = anchor;
+    k = stiffness;
+    b = damping;
+    l0 = restLength;
+    
     P = m * v;
+
+    mat3 I = mat3(
+        1.0f / 6 * mass*l*l, 0, 0,
+        0, 1.0f / 6 * mass*l*l, 0,
+        0, 0, 1.0f / 6 * mass*l*l);
+    I_inv = inverse(I);
+
 	isInBoundary = true;
-    cout << "new particle created at position: " << x.x << " " << x.y << " " << x.z << endl;
+    // cout << "new particle created at position: " << x.x << " " << x.y << " " << x.z << endl;
 }
 
 

@@ -120,7 +120,8 @@ void mainLoop() {
     do {
         // calculate dt
         float currentTime = glfwGetTime();
-        float dt = currentTime - t;
+        // float dt = currentTime - t;
+		float dt = 0.01f;
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -138,14 +139,16 @@ void mainLoop() {
                 };
             }
             else {
+				float forceY = -particle->m * g - particle->k *particle->x.y - particle->b*particle->v.y;
                 particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
                     vector<float> f(6, 0.0f);
-                    f[1] = - particle->m * g * 0.00001f;
+					f[1] = forceY;
                     return f;
                 };
             }
 		}
-        print(skin->particles.at(0)->x);
+        // print(skin->particles.at(0)->v);
+		cout << skin->particles.at(0)->v.y << ' ' << skin->particles.at(0)->x.y << endl;
 		skin->update(t, dt);
         skin->draw();
 
@@ -170,8 +173,7 @@ void mainLoop() {
 		skinTransformations.clear();
         for each (auto particle in skin->particles)
         {
-            // skinTransformations.push_back(translate(mat4(1.0), vec3(0.0, sin(particle->x.x) * cos(t), 0.0)));
-			skinTransformations.push_back(translate(mat4(1.0), particle->x));
+            skinTransformations.push_back(translate(mat4(1.0), particle->x));
         }
         glUniformMatrix4fv(skinTransformationsLocation, skinTransformations.size(), GL_FALSE, &skinTransformations[0][0][0]);
 

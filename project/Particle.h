@@ -17,6 +17,10 @@ using namespace std;
 
 class Particle : public RigidBody {
     public:
+        float b, k, l0, l;
+
+        glm::vec3 a;
+
         /**
          * list of indices of all adjacent neighbours
          * distance = 1 
@@ -35,7 +39,8 @@ class Particle : public RigidBody {
          */
         float isInBoundary;
 
-        Particle(vec3 pos, vec3 vel, vec3 force, float m);
+        Particle(vec3 pos, vec3 vel, float mass, float length, 
+            vec3 anchor, float stiffness, float damping, float restLength);
         void addNeighbourD1(unsigned int neigbourIndex);
         void addNeighbourD2(unsigned int neigbourIndex);
         void update(float t, float dt);

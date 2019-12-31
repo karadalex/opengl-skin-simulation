@@ -23,7 +23,10 @@ Skin::Skin(string path) {
     numOfParticles = skin->indexedVertices.size();
 	for each (auto vertex in skin->indexedVertices)
 	{
-        vertexParticle = new Particle(vertex, vec3(0), vec3(0), 0.01f/numOfParticles);
+        vertexParticle = new Particle(
+            vertex, vec3(0), 1.0f,
+            1.0f, vertex, 50, 1.5, 2
+        );
         particles.push_back(vertexParticle);
 	}
 
@@ -61,19 +64,8 @@ void Skin::draw(unsigned int drawable) {
 }
 
 void Skin::update(float t, float dt) {
-    // numerical integration
 	for each (auto skinParticle in particles)
 	{
 		skinParticle->update(t, dt);
 	}
-
-    // compute model matrix
-    mat4 scale = glm::scale(mat4(), vec3(1, 1, 1));
-    mat4 tranlation = translate(mat4(), vec3(0, 0, 0));
-    #ifdef USE_QUATERNIONS
-        mat4 rotation = mat4_cast(q);
-    #else
-        mat4 rotation = mat4(R);
-    #endif
-    modelMatrix = tranlation * rotation * scale;
 }
