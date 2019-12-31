@@ -139,9 +139,11 @@ void mainLoop() {
                 };
             }
             else {
+				float forceX = 2 - particle->k * particle->x.x - 2*particle->b * particle->v.x;
 				float forceY = -particle->m * g - particle->k *particle->x.y - particle->b*particle->v.y;
                 particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
                     vector<float> f(6, 0.0f);
+					f[0] = forceX;
 					f[1] = forceY;
                     return f;
                 };
