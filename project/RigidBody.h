@@ -39,17 +39,11 @@ public:
 #endif
     /** P: momentum, L: angular momentum */
     glm::vec3 P, L;
+    
     /**
-     * The forcing function accepts t, y and returns a vector of 6 floats
-     * [fx, fy, fz, taux, tauy, tauz] corresponding to the values of the
-     * applied forces. By default zero forces are applied, otherwise the user
-     * must specify the forcing function.
+     * The forces vector: 3 forces, 3 torques
      */
-    std::function<std::vector<float>(float t, const std::vector<float>& y)> forcing =
-        [](float t, const std::vector<float>& y)->std::vector<float> {
-        std::vector<float> f(6, 0.0f);
-        return f;
-    };
+    std::vector<float> forces;
 
     RigidBody();
     ~RigidBody();

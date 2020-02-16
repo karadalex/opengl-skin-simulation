@@ -98,8 +98,6 @@ void createContext() {
 	// print(skin->skin->indices);
 	// cout << endl;
 	// print(skin->skin->vertices);
-
-    print(skin->particles.at(0)->neighboursD1);
 }
 
 
@@ -130,27 +128,44 @@ void mainLoop() {
         camera->update();
 
 		glUniform1i(objectVAOLocation, skin->skin->VAO);
+        // Exert forces in multiple particles
 		for each (auto particle in skin->particles) {
 			// If vertex is in the boundary of the mesh, it should not move
             if (particle->isInBoundary) {
-                particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
-                    vector<float> f(6, 0.0f);
-                    return f;
-                };
+                vector<float> f(6, 0.0f);
+                particle->addForce(f);
             }
             else {
-				float forceX = 2 - particle->k * particle->x.x - 2*particle->b * particle->v.x;
-				float forceY = -particle->m * g - particle->k *particle->x.y - particle->b*particle->v.y;
-                particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
-                    vector<float> f(6, 0.0f);
-					f[0] = forceX;
-					f[1] = forceY;
-                    return f;
-                };
+				float forceX = 2 + particle->k * (particle->a.x - particle->x.x) - 2*particle->b * particle->v.x;
+				float forceY = -particle->m * g + particle->k*(particle->a.y - particle->x.y) - particle->b*particle->v.y;
+                vector<float> f(6, 0.0f);
+                f[0] = forceX;
+                f[1] = forceY;
+                particle->addForce(f);
             }
 		}
-        // print(skin->particles.at(0)->v);
-		cout << skin->particles.at(0)->v.y << ' ' << skin->particles.at(0)->x.y << endl;
+
+        // Exert force in one particle, approximately in the center
+        auto particle = skin->particles.at((int)skin->numOfParticles/2);
+        // If vertex is in the boundary of the mesh, it should not move
+        // if (particle->isInBoundary) {
+        //     particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
+        //         vector<float> f(6, 0.0f);
+        //         return f;
+        //     };
+        // }
+        // else {
+        //     float forceX = 2 + particle->k * (particle->a.x - particle->x.x) - 2*particle->b * particle->v.x;
+        //     float forceY = -particle->m * g + particle->k*(particle->a.y - particle->x.y) - particle->b*particle->v.y;
+        //     particle->forcing = [&](float t, const vector<float>& y)->vector<float> {
+        //         vector<float> f(6, 0.0f);
+        //         f[0] = forceX;
+        //         f[1] = forceY;
+        //         return f;
+        //     };
+        // }
+		cout << particle->v.y << ' ' << particle->x.y << endl;
+
 		skin->update(t, dt);
         skin->draw();
 

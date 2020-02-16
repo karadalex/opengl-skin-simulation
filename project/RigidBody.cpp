@@ -131,7 +131,6 @@ std::vector<float> RigidBody::dydt(float t, const std::vector<float>& y) {
     }
 #endif
 
-    auto forces = forcing(t, y);
     //P_dot = f
     yDot[k++] = forces[0];
     yDot[k++] = forces[1];

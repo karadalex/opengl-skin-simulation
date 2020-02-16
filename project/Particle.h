@@ -19,13 +19,15 @@ class Particle : public RigidBody {
     public:
         float b, k, l0, l;
 
-        glm::vec3 a;
+        vec3 a;
 
         /**
          * list of indices of all adjacent neighbours
          * distance = 1 
          */
         vector<Particle*> neighboursD1;
+
+        vector<float> neighboursD1RestDistances;
 
         /**
          * list of indices of all neighbours
@@ -41,11 +43,11 @@ class Particle : public RigidBody {
 
         Particle(vec3 pos, vec3 vel, float mass, float length, 
             vec3 anchor, float stiffness, float damping, float restLength);
-		void Particle::addNeighbourD1(Particle* neigbour);
-		void Particle::addNeighbourD2(Particle* neigbour);
+		void addNeighbourD1(Particle* neigbour);
+		void addNeighbourD2(Particle* neigbour);
+		void addForce(vector<float> force);
         void update(float t, float dt);
         void draw();
-        void applyForce(vec3 $force);
         ~Particle();
 };
 

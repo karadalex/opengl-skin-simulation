@@ -29,20 +29,27 @@ Particle::Particle(vec3 pos, vec3 vel, float mass, float length,
 
 	isInBoundary = true;
     // cout << "new particle created at position: " << x.x << " " << x.y << " " << x.z << endl;
+
+	for (int i = 0; i < forces.size(); i++)
+	{
+		forces[i] = 0;
+	}
 }
 
 
-void Particle::addNeighbourD1(Particle* neigbour) {
+void Particle::addNeighbourD1(Particle* neighbour) {
 	bool neigbourAlreadyExists = false;
 	for each (Particle* otherNeighbour in neighboursD1) {
-		if (otherNeighbour == neigbour)
+		if (otherNeighbour == neighbour)
 		{
 			neigbourAlreadyExists = true;
 		}
 	}
 
 	if (!neigbourAlreadyExists) {
-		neighboursD1.push_back(neigbour);
+		neighboursD1.push_back(neighbour);
+        float restDistance = distance(x, neighbour->x);
+        neighboursD1RestDistances.push_back(restDistance);
 	}
     
     if (neighboursD1.size() > 5) {
@@ -57,7 +64,21 @@ void Particle::addNeighbourD2(Particle* neigbour) {
 
 
 void Particle::update(float t, float dt) {
-    //integration
+    // Calculate new distances with neighbours after applying the forces
+    // and calculate resulting forces exerted to neighbours
+    // for (int i = 0; i < neighboursD1.size(); i++) {
+    //     Particle* neighbour = neighboursD1[i];
+    //     float newDistance = distance(x, neighbour->x);
+    //     vec3 unitVector = (x - neighbour->x)/(newDistance);
+    //     vec3 newNeighbourForce = k * unitVector * (neighboursD1RestDistances[i] - newDistance) - b*v;
+    //     vector<float> f(6, 0.0f);
+    //     f[0] = -newNeighbourForce.x;
+    //     f[1] = -newNeighbourForce.y;
+    //     f[2] = -newNeighbourForce.z;
+    //     neighbour->addForce(f);
+    // }
+    
+    // apply forces, numerical integration
     advanceState(t, dt);
 }
 
@@ -67,10 +88,12 @@ void Particle::draw() {
 }
 
 
-void Particle::applyForce(vec3 $force) {
-    // 
+void Particle::addForce(vector<float> forceVector) {
+    forces = forceVector;
+	for (int i = 0; i < forces.size(); i++) {
+		forces[i] += forceVector[i];
+	}    
 }
-
 
 Particle::~Particle() {
     // 
