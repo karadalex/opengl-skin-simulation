@@ -101,6 +101,7 @@ add_executable(project
   project/main.cpp
   project/program1.h
   project/program2.h
+  project/program3.h
   project/Skin.h
   project/Skin.cpp
   project/RigidBody.h
@@ -121,6 +122,7 @@ add_executable(project
 
   project/skin-shader.frag
   project/skin-shader.vert
+  project/program3.vert
   )
 target_link_libraries(project
   ${ALL_LIBS}
