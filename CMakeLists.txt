@@ -99,6 +99,8 @@ add_definitions(
 ###############################################################################
 add_executable(project
   project/main.cpp
+  project/program1.h
+  project/program2.h
   project/Skin.h
   project/Skin.cpp
   project/RigidBody.h
