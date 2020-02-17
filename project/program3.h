@@ -160,7 +160,7 @@ void mainLoop() {
 
         // Place scalpel in correct position
         glm::mat4 scalpelMatrix = glm::rotate(mat4(), -3.14f/2, vec3(1.0, 0.0, 0.0));
-        scalpelMatrix = glm::translate(scalpelMatrix, vec3(0.0, 0.0, 10.0));
+        scalpelMatrix = glm::translate(scalpelMatrix, vec3(0.0, 0.0, 8.0));
         // give small inclination
         scalpelMatrix = glm::rotate(scalpelMatrix, -3.14f / 6, vec3(0.0, 1.0, 0.0));
 
