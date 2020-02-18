@@ -21,7 +21,7 @@ Skin::Skin(string path) {
 
     // Build particles
     numOfParticles = skin->indexedVertices.size();
-	for each (auto vertex in skin->indexedVertices)
+	for (auto vertex : skin->indexedVertices)
 	{
         vertexParticle = new Particle(
             vertex, vec3(0), 1.0f,
@@ -64,7 +64,7 @@ void Skin::draw(unsigned int drawable) {
 }
 
 void Skin::update(float t, float dt) {
-	for each (auto skinParticle in particles)
+	for (auto skinParticle : particles)
 	{
 		skinParticle->update(t, dt);
 	}

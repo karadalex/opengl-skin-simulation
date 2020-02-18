@@ -130,7 +130,7 @@ void mainLoop() {
 
 		glUniform1i(objectVAOLocation, skin->skin->VAO);
         // Exert forces in multiple particles
-		for each (auto particle in skin->particles) {
+		for (auto particle : skin->particles) {
 			// If vertex is in the boundary of the mesh, it should not move
             if (particle->isInBoundary) {
                 vector<float> f(6, 0.0f);
@@ -189,7 +189,7 @@ void mainLoop() {
 
         // load skin transformations
 		skinTransformations.clear();
-        for each (auto particle in skin->particles)
+        for (auto particle : skin->particles)
         {
             skinTransformations.push_back(translate(mat4(1.0), particle->x));
         }
@@ -197,7 +197,7 @@ void mainLoop() {
 
         // load sphere transformations
 		sphereTransformations.clear();
-        for each (auto vertex in sphere->indexedVertices)
+        for (auto vertex : sphere->indexedVertices)
         {
             mat4 sphereTransformation = mat4();
             sphereTransformation = scale(sphereTransformation, vec3(0.5, 0.5, 0.5));

@@ -39,7 +39,7 @@ Particle::Particle(vec3 pos, vec3 vel, float mass, float length,
 
 void Particle::addNeighbourD1(Particle* neighbour) {
 	bool neigbourAlreadyExists = false;
-	for each (Particle* otherNeighbour in neighboursD1) {
+	for (Particle* otherNeighbour : neighboursD1) {
 		if (otherNeighbour == neighbour)
 		{
 			neigbourAlreadyExists = true;
@@ -66,17 +66,17 @@ void Particle::addNeighbourD2(Particle* neigbour) {
 void Particle::update(float t, float dt) {
     // Calculate new distances with neighbours after applying the forces
     // and calculate resulting forces exerted to neighbours
-    // for (int i = 0; i < neighboursD1.size(); i++) {
-    //     Particle* neighbour = neighboursD1[i];
-    //     float newDistance = distance(x, neighbour->x);
-    //     vec3 unitVector = (x - neighbour->x)/(newDistance);
-    //     vec3 newNeighbourForce = k * unitVector * (neighboursD1RestDistances[i] - newDistance) - b*v;
-    //     vector<float> f(6, 0.0f);
-    //     f[0] = -newNeighbourForce.x;
-    //     f[1] = -newNeighbourForce.y;
-    //     f[2] = -newNeighbourForce.z;
-    //     neighbour->addForce(f);
-    // }
+    for (int i = 0; i < neighboursD1.size(); i++) {
+        Particle* neighbour = neighboursD1[i];
+        float newDistance = distance(x, neighbour->x);
+        vec3 unitVector = (x - neighbour->x)/(newDistance);
+        vec3 newNeighbourForce = k * unitVector * (neighboursD1RestDistances[i] - newDistance) - b*v;
+        vector<float> f(6, 0.0f);
+        f[0] = -newNeighbourForce.x;
+        f[1] = -newNeighbourForce.y;
+        f[2] = -newNeighbourForce.z;
+        neighbour->addForce(f);
+    }
     
     // apply forces, numerical integration
     advanceState(t, dt);
